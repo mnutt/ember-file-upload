@@ -103,7 +103,10 @@ export default Ember.Component.extend({
     if (this.isAllowed()) {
       evt.dataTransfer.dropEffect = get(this, 'cursor');
       set(this, 'active', true);
-      set(this, 'valid', get(dataTransfer, 'valid'));
+
+      get(dataTransfer, 'valid').then((valid) => {
+        set(this, 'valid', valid);
+      });
 
       if (this.ondragenter) {
         this.ondragenter(dataTransfer);
@@ -201,7 +204,9 @@ export default Ember.Component.extend({
 
     // Add file(s) to upload queue.
     set(this, 'active', false);
-    get(this, 'queue')._addFiles(get(this[DATA_TRANSFER], 'files'), 'drag-and-drop');
-    this[DATA_TRANSFER] = null;
+    get(this[DATA_TRANSFER], 'files').then((files) => {
+      get(this, 'queue')._addFiles(files, 'drag-and-drop');
+      this[DATA_TRANSFER] = null;
+    });
   }
 });

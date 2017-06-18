@@ -114,7 +114,7 @@ export default Ember.Object.extend({
 
   /**
     Returns the appropriate file extension of
-    the file according to the type
+    the file according to the type.
 
     @property extension
     @type {String}
@@ -125,6 +125,17 @@ export default Ember.Object.extend({
       return get(this, 'type').split('/').slice(-1)[0];
     }
   }),
+
+  /**
+    Only applicable for Chrome 21+, if one or more
+    directories is dropped, this will contain the
+    directory tree + filename for each entry.
+
+    @property fullPath
+    @type {String}
+    @readonly
+   */
+  fullPath: reads('blob.fullPath'),
 
   /**
     @property loaded

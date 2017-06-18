@@ -15,7 +15,9 @@ module('data-transfer', {
 
 test('with no native dataTransfer', function (assert) {
   assert.ok(this.subject.get('valid'));
-  assert.equal(this.subject.get('files'), null);
+  return this.subject.get('files').then((files) => {
+    assert.equal(files, null);
+  });
 });
 
 test('multiple=false; a single item being dragged', function (assert) {
@@ -24,8 +26,14 @@ test('multiple=false; a single item being dragged', function (assert) {
       type: 'image/jpeg'
     }]
   });
-  assert.equal(this.subject.get('files.length'), 1);
-  assert.ok(this.subject.get('valid'));
+
+  this.subject.get('files').then((files) => {
+    assert.equal(files.length, 1);
+  });
+
+  return this.subject.get('valid').then((valid) => {
+    assert.ok(valid);
+  });
 });
 
 test('multiple=false; a single file being dropped', function (assert) {
@@ -35,8 +43,14 @@ test('multiple=false; a single file being dropped', function (assert) {
       type: 'image/jpeg'
     }]
   });
-  assert.equal(this.subject.get('files.length'), 1);
-  assert.ok(this.subject.get('valid'));
+
+  this.subject.get('valid').then((valid) => {
+    assert.ok(valid);
+  });
+
+  return this.subject.get('files').then((files) => {
+    assert.equal(files.length, 1);
+  });
 });
 
 test('multiple=false; multiple items being dragged', function (assert) {
@@ -47,8 +61,14 @@ test('multiple=false; multiple items being dragged', function (assert) {
       type: 'image/png'
     }]
   });
-  assert.equal(this.subject.get('files.length'), 1);
-  assert.notOk(this.subject.get('valid'));
+
+  this.subject.get('files').then((files) => {
+    assert.equal(files.length, 1);
+  });
+
+  return this.subject.get('valid').then((valid) => {
+    assert.notOk(valid);
+  });
 });
 
 test('multiple=false; multiple files being dropped', function (assert) {
@@ -61,8 +81,14 @@ test('multiple=false; multiple files being dropped', function (assert) {
       type: 'image/png'
     }]
   });
-  assert.equal(this.subject.get('files.length'), 1);
-  assert.notOk(this.subject.get('valid'));
+
+  this.subject.get('files').then((files) => {
+    assert.equal(files.length, 1);
+  });
+
+  return this.subject.get('valid').then((valid) => {
+    assert.notOk(valid);
+  });
 });
 
 test('multiple=true; a single item being dragged', function (assert) {
@@ -72,8 +98,14 @@ test('multiple=true; a single item being dragged', function (assert) {
     }]
   });
   this.subject.set('queue', { multiple: true });
-  assert.equal(this.subject.get('files.length'), 1);
-  assert.ok(this.subject.get('valid'));
+
+  this.subject.get('files').then((files) => {
+    assert.equal(files.length, 1);
+  });
+
+  return this.subject.get('valid').then((valid) => {
+    assert.ok(valid);
+  });
 });
 
 test('multiple=true; a single file being dropped', function (assert) {
@@ -84,8 +116,14 @@ test('multiple=true; a single file being dropped', function (assert) {
     }]
   });
   this.subject.set('queue', { multiple: true });
-  assert.equal(this.subject.get('files.length'), 1);
-  assert.ok(this.subject.get('valid'));
+
+  this.subject.get('files').then((files) => {
+    assert.equal(files.length, 1);
+  });
+
+  return this.subject.get('valid').then((valid) => {
+    assert.ok(valid);
+  });
 });
 
 test('multiple=true; multiple items being dragged', function (assert) {
@@ -97,8 +135,14 @@ test('multiple=true; multiple items being dragged', function (assert) {
     }]
   });
   this.subject.set('queue', { multiple: true });
-  assert.equal(this.subject.get('files.length'), 2);
-  assert.ok(this.subject.get('valid'));
+
+  this.subject.get('files').then((files) => {
+    assert.equal(files.length, 2);
+  });
+
+  return this.subject.get('valid').then((valid) => {
+    assert.ok(valid);
+  });
 });
 
 test('multiple=true; multiple files being dropped', function (assert) {
@@ -112,8 +156,14 @@ test('multiple=true; multiple files being dropped', function (assert) {
     }]
   });
   this.subject.set('queue', { multiple: true });
-  assert.equal(this.subject.get('files.length'), 2);
-  assert.ok(this.subject.get('valid'));
+
+  this.subject.get('files').then((files) => {
+    assert.equal(files.length, 2);
+  });
+
+  return this.subject.get('valid').then((valid) => {
+    assert.ok(valid);
+  });
 });
 
 test('mime types validation with items being dragged', function (assert) {
@@ -135,15 +185,20 @@ test('mime types validation with items being dragged', function (assert) {
     accept: 'image/gif, video/*'
   });
 
-  assert.equal(this.subject.get('files.length'), 3);
-  assert.deepEqual(this.subject.get('files'), [{
-    type: 'image/gif'
-  }, {
-    type: 'video/mp4'
-  }, {
-    type: 'video/avi'
-  }]);
-  assert.notOk(this.subject.get('valid'));
+  this.subject.get('files').then((files) => {
+    assert.equal(files.length, 3);
+    assert.deepEqual(files, [{
+      type: 'image/gif'
+    }, {
+      type: 'video/mp4'
+    }, {
+      type: 'video/avi'
+    }]);
+  });
+
+  return this.subject.get('valid').then((valid) => {
+    assert.notOk(valid);
+  });
 });
 
 test('extension validation with files being dropped', function (assert) {
@@ -167,13 +222,18 @@ test('extension validation with files being dropped', function (assert) {
     accept: '.gif, .mp4'
   });
 
-  assert.equal(this.subject.get('files.length'), 2);
-  assert.deepEqual(this.subject.get('files'), [{
-    name: 'pug-life.GIF',
-    type: 'image/gif'
-  }, {
-    name: 'pug-snoring.mp4',
-    type: 'video/mpeg4'
-  }]);
-  assert.notOk(this.subject.get('valid'));
+  this.subject.get('files').then((files) => {
+    assert.equal(files.length, 2);
+    assert.deepEqual(files, [{
+      name: 'pug-life.GIF',
+      type: 'image/gif'
+    }, {
+      name: 'pug-snoring.mp4',
+      type: 'video/mpeg4'
+    }]);
+  });
+
+  return this.subject.get('valid').then((valid) => {
+    assert.notOk(valid);
+  });
 });

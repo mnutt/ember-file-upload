@@ -19,6 +19,7 @@ export default Ember.Route.extend({
     uploadProof (file) {
       let asset = {
         filename: get(file, 'name'),
+        fullPath: get(file, 'fullPath'),
         file
       };
       this.currentModel.pushObject(asset);
